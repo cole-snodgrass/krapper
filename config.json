@@ -46,5 +46,11 @@
     		"lower_bound":10,
     		"upper_bound":10
     	}
+    },
+    "regex":{
+    	"type":"regex",
+    	"options":{
+    		"pattern":"test"
+    	}
     }
 }

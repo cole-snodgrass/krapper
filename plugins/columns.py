@@ -23,6 +23,34 @@ class KrapperColumn(object):
 				data += source.read().splitlines()
 		return data
 
+
+# http://www.regular-expressions.info/posixbrackets.html
+# [:digit:] = 0-9
+# [:lower:] = a-z
+# [:upper:] = A-Z
+# [:xdigit:] = A-Fa-f0-9
+# [:alnum:] = a-zA-Z0-9
+# [:alpha:] = a-zA-Z
+# [:punct:] = !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~
+#
+class RegexKrapperColumn(KrapperColumn):
+	column_type = 'regex'
+	digit = '0123456789'
+	lower = 'abcdefghijklmnopqrstuvwxyz'
+	upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+	xdigit = 'abcdefABCDEF' + digit
+	alnum = lower + upper + digit
+	alpha = lower + upper
+	punct = '!"#$%&\'()*+,\-./:;<=>?@[\\\]^_`{|}~'
+
+	def __init__(self, name, pattern):
+		super(RegexKrapperColumn, self).__init__(name)
+		self.pattern = pattern
+
+	@property
+	def value(self):
+		return '{}{}'.format(random.choice(self.alnum), random.choice(self.punct))#self.pattern
+
 class EnumKrapperColumn(KrapperColumn):
 	column_type = 'enum'
 

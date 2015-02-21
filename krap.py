@@ -12,7 +12,8 @@ class KrapperConfigParser(object):
 		'name_last' : plugins.columns.NameLastKrapperColumn,
 		'range_int' : plugins.columns.IntRangeKrapperColumn,
 		'enum' : plugins.columns.EnumKrapperColumn,
-		'text' : plugins.columns.TextKrapperColumn
+		'text' : plugins.columns.TextKrapperColumn,
+		'regex' : plugins.columns.RegexKrapperColumn
 	}
 
 	@staticmethod
