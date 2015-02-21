@@ -1,0 +1,5 @@
+{
+	"first_name" : { "type" : "name" },
+	"last_name" : { "type": "name"},
+	"age" : { "type" : "numeric_range", "options" : {"lower_bound":18,"upper_bound":24} }
+}
