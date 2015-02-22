@@ -35,21 +35,49 @@ class KrapperColumn(object):
 #
 class RegexKrapperColumn(KrapperColumn):
 	column_type = 'regex'
-	digit = '0123456789'
-	lower = 'abcdefghijklmnopqrstuvwxyz'
-	upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-	xdigit = 'abcdefABCDEF' + digit
-	alnum = lower + upper + digit
-	alpha = lower + upper
-	punct = '!"#$%&\'()*+,\-./:;<=>?@[\\\]^_`{|}~'
+	
+	# digit
+	d = '0123456789'
+	# digit, no zero
+	d1 = '123456789'
+	# character
+	c = 'abcdefghijklmnopqrstuvwxyz'
+	# CHARACTER
+	C = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+	# hex
+	x = 'abcdef' + d
+	# HEX
+	X = 'ABCDEF' + d
+	# alphanumeric
+	an = c + C + d 
+	# alpha
+	a = c + C
+	# punctuation
+	p = '!"#$%&\'()*+,\-./:;<=>?@[\]^_`{|}~'
+
+	mapping = {
+		'{d}' : d,
+		'{d1}' : d1,
+		'{c}' : c,
+		'{C}' : C,
+		'{x}' : x,
+		'{X}' : X,
+		'{an}' : an,
+		'{a}' : a,
+		'{p}' : p
+	}
 
 	def __init__(self, name, pattern):
 		super(RegexKrapperColumn, self).__init__(name)
 		self.pattern = pattern
+		import re
+		self.regex = re.compile('({})'.format("|".join(map(re.escape, self.mapping.keys()))))
+		print('({})'.format("|".join(map(re.escape, self.mapping.keys()))))
 
 	@property
 	def value(self):
-		return '{}{}'.format(random.choice(self.alnum), random.choice(self.punct))#self.pattern
+		return self.regex.sub(lambda mo: random.choice(self.mapping[mo.string[mo.start():mo.end()]]), self.pattern)
+		#return '{}{}'.format(random.choice(self.alnum), random.choice(self.punct))
 
 class EnumKrapperColumn(KrapperColumn):
 	column_type = 'enum'

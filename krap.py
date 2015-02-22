@@ -64,7 +64,7 @@ class Krapper(object):
 
 
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser(description='data crapper with a k, because k\'s are cool')
+	parser = argparse.ArgumentParser(description='data crapper with a k, because k\'s are cool?')
 	parser.add_argument('-c', '--config', required=True, help='configuration file')
 	parser.add_argument('-n', '--number', type=int, default=10, help='number of records to create')
 

@@ -50,7 +50,13 @@
     "regex":{
     	"type":"regex",
     	"options":{
-    		"pattern":"test"
+    		"pattern":"test{c}"
+    	}
+    },
+    "styleColor":{
+    	"type":"regex",
+    	"options": {
+    		"pattern":"START-{d}{d1}{c}{C}{x}{X}{an}{a}{p}-END"
     	}
     }
 }
