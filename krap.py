@@ -3,17 +3,17 @@ import argparse
 import json
 import collections
 import random
-import plugins.columns
+import plugins.fields
 
 class KrapperConfigParser(object):
-	column_mapping = {		
-		'name' : plugins.columns.NameKrapperColumn,
-		'name_first' : plugins.columns.NameFirstKrapperColumn,
-		'name_last' : plugins.columns.NameLastKrapperColumn,
-		'range_int' : plugins.columns.IntRangeKrapperColumn,
-		'enum' : plugins.columns.EnumKrapperColumn,
-		'text' : plugins.columns.TextKrapperColumn,
-		'regex' : plugins.columns.RegexKrapperColumn
+	field_mapping = {		
+		'name' : plugins.fields.NameKrapperField,
+		'name_first' : plugins.fields.NameFirstKrapperField,
+		'name_last' : plugins.fields.NameLastKrapperField,
+		'range_int' : plugins.fields.IntRangeKrapperField,
+		'enum' : plugins.fields.EnumKrapperField,
+		'text' : plugins.fields.TextKrapperField,
+		'regex' : plugins.fields.RegexKrapperField
 	}
 
 	@staticmethod
@@ -25,29 +25,29 @@ class KrapperConfigParser(object):
 		except IOError:
 			print('no configuration "{}" found'.format(filename))
 			
-		columns = collections.OrderedDict()
+		fields = collections.OrderedDict()
 		try:
 			for k in data:
 				# convert the OrderedDict back to a normal dict, we don't care about order anymore
 				if 'options' in data[k]:
-					columns[k] = KrapperConfigParser.column_mapping[data[k]['type']](k, **dict(data[k]['options']))
+					fields[k] = KrapperConfigParser.field_mapping[data[k]['type']](k, **dict(data[k]['options']))
 				else:
-					columns[k] = KrapperConfigParser.column_mapping[data[k]['type']](k)
+					fields[k] = KrapperConfigParser.field_mapping[data[k]['type']](k)
 		except KeyError:
-			print('no registered column plugin for "{}", ignoring this column'.format(data[k]['type']))
+			print('no registered field plugin for "{}", ignoring this field'.format(data[k]['type']))
 		except TypeError:
-			print('missing required options for plugin "{}", ignoring this column'.format(data[k]['type']))
+			print('missing required options for plugin "{}", ignoring this field'.format(data[k]['type']))
 
-		return KrapperConfig(columns)
+		return KrapperConfig(fields)
 
 
 class KrapperConfig(object):
-	def __init__(self, columns):
-		self._columns = columns
+	def __init__(self, fields):
+		self._fields = fields
 				
 	@property
-	def columns(self):		
-		return self._columns
+	def fields(self):		
+		return self._fields
 
 class Krapper(object):
 	def __init__(self, config, num_records):
@@ -55,11 +55,11 @@ class Krapper(object):
 		self.num_records = num_records
 		
 	def run(self):
-		columns = self.config.columns
+		fields = self.config.fields
 		for n in range(0, self.num_records):
 			record = []
-			for c in self.config.columns:
-				record.append('"{}":"{}"'.format(c, columns[c].value))
+			for c in self.config.fields:
+				record.append('"{}":"{}"'.format(c, fields[c].value))
 			print('{' + ', '.join(record) + '}')
 
 
