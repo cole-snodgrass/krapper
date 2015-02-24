@@ -72,7 +72,6 @@ class RegexKrapperField(KrapperField):
 		self.pattern = pattern
 		import re
 		self.regex = re.compile('({})'.format("|".join(map(re.escape, self.mapping.keys()))))
-		print('({})'.format("|".join(map(re.escape, self.mapping.keys()))))
 
 	@property
 	def value(self):
