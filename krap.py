@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import argparse
 import json
 import collections
@@ -17,9 +18,17 @@ class KrapperConfigParser(object):
 	}
 
 	@staticmethod
-	def parse(filename):
+	def parse(args):
+		fields = KrapperConfigParser.parse_config(args.config)
+		num_records = args.number
+		output_type = args.output_type
+
+		return KrapperConfig(fields, num_records, output_type)
+
+	@staticmethod
+	def parse_config(filename):
 		try:
-			with open(filename) as config:
+			with open(args.config) as config:
 				# need to set the object_pairs_hook to ensure order is maintained
 				data = json.load(config, object_pairs_hook=collections.OrderedDict)
 		except IOError:
@@ -38,27 +47,36 @@ class KrapperConfigParser(object):
 		except TypeError:
 			print('missing required options for plugin "{}", ignoring this field'.format(data[k]['type']))
 
-		return KrapperConfig(fields)
+		return fields
 
 
 class KrapperConfig(object):
-	def __init__(self, fields):
+	def __init__(self, fields, num_records, output_type):
 		self._fields = fields
+		self._num_records = num_records
+		self._output_type = output_type
 				
 	@property
 	def fields(self):		
 		return self._fields
 
+	@property
+	def num_records(self):
+		return self._num_records
+
+	@property
+	def output_type(self):
+		return self._output_type
+
 class Krapper(object):
-	def __init__(self, config, num_records):
+	def __init__(self, config):
 		self.config = config
-		self.num_records = num_records
 		
 	def run(self):
 		fields = self.config.fields
-		for n in range(0, self.num_records):
+		for n in range(0, self.config.num_records):
 			record = []
-			for c in self.config.fields:
+			for c in fields:
 				record.append('"{}":"{}"'.format(c, fields[c].value))
 			print('{' + ', '.join(record) + '}')
 
@@ -67,8 +85,9 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='data crapper with a k, because k\'s are cool?')
 	parser.add_argument('-c', '--config', required=True, help='configuration file')
 	parser.add_argument('-n', '--number', type=int, default=10, help='number of records to create')
+	parser.add_argument('-o', '--output-type', default='json', choices=['json'], help='format of records')
 
 	args = parser.parse_args()
 
-	krapper = Krapper(KrapperConfigParser.parse(args.config), args.number)
+	krapper = Krapper(KrapperConfigParser.parse(args))
 	krapper.run()
