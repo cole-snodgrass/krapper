@@ -33,19 +33,30 @@ class KrapperConfigParser(object):
 				data = json.load(config, object_pairs_hook=collections.OrderedDict)
 		except IOError:
 			print('no configuration "{}" found'.format(filename))
-			
+
+		if 'fields' in data:
+			fields = KrapperConfigParser.parse_fields(data['fields'])			
+		else:
+			print('no fields defined in configuration "{}"'.format(filename))
+
+		# TODO fix NoneType AttributeError here
+		return fields
+
+	@staticmethod
+	def parse_fields(config_fields):
 		fields = collections.OrderedDict()
-		try:
-			for k in data:
+
+		for name, field in config_fields.iteritems():
+			try:
 				# convert the OrderedDict back to a normal dict, we don't care about order anymore
-				if 'options' in data[k]:
-					fields[k] = KrapperConfigParser.field_mapping[data[k]['type']](k, **dict(data[k]['options']))
+				if 'options' in field:
+					fields[name] = KrapperConfigParser.field_mapping[field['type']](name, **dict(field['options']))
 				else:
-					fields[k] = KrapperConfigParser.field_mapping[data[k]['type']](k)
-		except KeyError:
-			print('no registered field plugin for "{}", ignoring this field'.format(data[k]['type']))
-		except TypeError:
-			print('missing required options for plugin "{}", ignoring this field'.format(data[k]['type']))
+					fields[name] = KrapperConfigParser.field_mapping[field['type']](name)
+			except KeyError:
+				print('no registered field plugin for "{}", ignoring this field'.format(field['type']))
+			except TypeError:
+				print('missing required options for plugin "{}", ignoring this field'.format(field['type']))
 
 		return fields
 
@@ -55,6 +66,8 @@ class KrapperConfig(object):
 		self._fields = fields
 		self._num_records = num_records
 		self._output_type = output_type
+		# TODO read this in from the configuration
+		self._output_empty_fields = True
 				
 	@property
 	def fields(self):		
@@ -68,6 +81,10 @@ class KrapperConfig(object):
 	def output_type(self):
 		return self._output_type
 
+	@property 
+	def output_empty_fields(self):
+		return self._output_empty_fields
+
 class Krapper(object):
 	def __init__(self, config):
 		self.config = config
@@ -76,8 +93,11 @@ class Krapper(object):
 		fields = self.config.fields
 		for n in range(0, self.config.num_records):
 			record = []
-			for c in fields:
-				record.append('"{}":"{}"'.format(c, fields[c].value))
+			for name, field in fields.iteritems():
+				if field.rate == 100 or field.rate >= random.randint(1, 100):
+					record.append('"{}":"{}"'.format(name, field.value))
+				elif self.config.output_empty_fields: 
+					record.append('"{}":""'.format(name))
 			print('{' + ', '.join(record) + '}')
 
 

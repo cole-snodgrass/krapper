@@ -1,0 +1,12 @@
+{  
+	"fields": {
+	    "xxx":{  
+	        "type":"range_int",
+	        "options":{  
+	            "rate":10,
+	            "lower_bound":1,
+	            "upper_bound":2
+	        }
+	    }
+    }
+}

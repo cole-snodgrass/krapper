@@ -1,8 +1,9 @@
 import random
 
 class KrapperField(object):
-	def __init__(self, name):
+	def __init__(self, name, rate=100):
 		self._name = name
+		self._rate = rate
 
 	@property
 	def name(self):
@@ -11,6 +12,10 @@ class KrapperField(object):
 	@name.setter
 	def name(self, value):
 		self._name = value
+
+	@property
+	def rate(self):
+		return self._rate
 
 	@property
 	def column_type(self):
@@ -67,8 +72,8 @@ class RegexKrapperField(KrapperField):
 		'{p}' : p
 	}
 
-	def __init__(self, name, pattern):
-		super(RegexKrapperField, self).__init__(name)
+	def __init__(self, name, pattern, rate=100):
+		super(RegexKrapperField, self).__init__(name, rate)
 		self.pattern = pattern
 		import re
 		self.regex = re.compile('({})'.format("|".join(map(re.escape, self.mapping.keys()))))
@@ -81,8 +86,8 @@ class RegexKrapperField(KrapperField):
 class EnumKrapperField(KrapperField):
 	column_type = 'enum'
 
-	def __init__(self, name, values, delimiter='|'):
-		super(EnumKrapperField, self).__init__(name)
+	def __init__(self, name, values, delimiter='|', rate=100):
+		super(EnumKrapperField, self).__init__(name, rate)
 		if isinstance(values, list):
 			self.values = values
 		else:
@@ -96,8 +101,8 @@ class TextKrapperField(KrapperField):
 	column_type = 'text'
 	data_file = ['text.txt']
 
-	def __init__(self, name, lower_bound, upper_bound):
-		super(TextKrapperField, self).__init__(name)
+	def __init__(self, name, lower_bound, upper_bound, rate=100):
+		super(TextKrapperField, self).__init__(name, rate)
 		self.lower_bound = lower_bound
 		self.upper_bound = upper_bound
 		self.data = super(TextKrapperField, self).parse_data(self.data_file)
@@ -116,8 +121,8 @@ class NameKrapperField(KrapperField):
 	data_files_first = ['name-first-male.txt', 'name-first-female.txt']
 	data_files_last = ['name-last.txt']
 	
-	def __init__(self, name, format='{first} {last}'):
-		super(NameKrapperField, self).__init__(name)
+	def __init__(self, name, format='{first} {last}', rate=100):
+		super(NameKrapperField, self).__init__(name, rate)
 		self.format = format
 		self.data_first = super(NameKrapperField, self).parse_data(self.data_files_first)
 		self.data_last = super(NameKrapperField, self).parse_data(self.data_files_last)
@@ -130,8 +135,8 @@ class NameFirstKrapperField(KrapperField):
 	column_type = 'name_first'
 	data_files = ['name-first-male.txt', 'name-first-female.txt']
 	
-	def __init__(self, name):
-		super(NameFirstKrapperField, self).__init__(name)
+	def __init__(self, name, rate=100):
+		super(NameFirstKrapperField, self).__init__(name, rate)
 		self.data = super(NameFirstKrapperField, self).parse_data(self.data_files)
 
 	@property
@@ -142,8 +147,8 @@ class NameLastKrapperField(KrapperField):
 	column_type = 'name_last'
 	data_files = ['name-last.txt']
 	
-	def __init__(self, name):
-		super(NameLastKrapperField, self).__init__(name)
+	def __init__(self, name, rate=100):
+		super(NameLastKrapperField, self).__init__(name, rate)
 		self.data = super(NameLastKrapperField, self).parse_data(self.data_files)
 
 	@property
@@ -154,8 +159,8 @@ class NameLastKrapperField(KrapperField):
 class IntRangeKrapperField(KrapperField):
 	column_type = 'range_int'
 
-	def __init__(self, name, lower_bound, upper_bound):
-		super(IntRangeKrapperField, self).__init__(name)
+	def __init__(self, name, lower_bound, upper_bound, rate=100):
+		super(IntRangeKrapperField, self).__init__(name, rate)
 		self.lower_bound = lower_bound
 		self.upper_bound = upper_bound
 
