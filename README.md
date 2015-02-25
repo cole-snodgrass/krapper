@@ -18,10 +18,12 @@ Example configuration script
 ```json
 # config.json
 {
-  "name" : { "type" : "name", "options" : { "format" : "{last}, {first}" } },
-  "age" : { "type" : "range_int", "options" : { "lower_bound" : 18, "upper_bound" : 40 } },
-  "gender" : { "type" : "enum", "options" : { "values" : "Male|Female" } },
-  "phone" : { "type" : "regex", "options" : { "pattern" : "({d}{d}{d})-{d}{d}{d}-{d}{d}{d}{d}" } }
+  "fields" : {
+    "name" : { "type" : "name", "options" : { "format" : "{last}, {first}" } },
+    "age" : { "type" : "range_int", "options" : { "lower_bound" : 18, "upper_bound" : 40 } },
+    "gender" : { "type" : "enum", "options" : { "values" : "Male|Female" } },
+    "phone" : { "type" : "regex", "options" : { "pattern" : "({d}{d}{d})-{d}{d}{d}-{d}{d}{d}{d}" } }
+  }
 }
 ```
 Example output
