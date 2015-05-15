@@ -50,7 +50,7 @@ help
 $ ./krapper.py -h
 usage: krapper.py [-h] -c CONFIG [-n NUMBER] [-o {json}]
 
-feed it a little information, and it can crap out a ton of data
+feed it a little information, receive a crap ton of data in return
 
 optional arguments:
   -h, --help            show this help message and exit
