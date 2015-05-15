@@ -102,7 +102,7 @@ class Krapper(object):
 
 
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser(description='feed it a little information, and it can crap out a ton of data')
+	parser = argparse.ArgumentParser(description='feed it a little information, receive a crap ton of data in return')
 	parser.add_argument('-c', '--config', required=True, help='configuration file')
 	parser.add_argument('-n', '--number', type=int, default=10, help='number of records to create')
 	parser.add_argument('-o', '--output-type', default='json', choices=['json'], help='format of records')
